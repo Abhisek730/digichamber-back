@@ -13,28 +13,13 @@ const { notFound, errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const server = http.createServer(app);
 
-// Comma-separated list in .env, e.g.:
-// CLIENT_ORIGIN=http://localhost:3000,http://127.0.0.1:5501,http://localhost:5501
-const allowedOrigins = (process.env.CLIENT_ORIGIN || 'https://cantacoder.com')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean);
-
-// In development, also accept ANY localhost/127.0.0.1 port so a shifting
-// Live Server / dev-server port doesn't block you. Remove this for production.
-const isDev = (process.env.NODE_ENV || 'development') !== 'production';
-const isLocalDevOrigin = (origin) =>
-  isDev && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-
+// Allow requests from any origin. `origin: true` reflects back whatever
+// Origin header the browser sent (rather than a literal '*'), which is what
+// makes this work correctly together with `credentials: true` below —
+// browsers reject a literal '*' on credentialed requests, but a reflected
+// origin is accepted from anywhere.
 const corsOptions = {
-  origin(origin, callback) {
-    // requests with no origin (curl, server-to-server, some mobile clients) are allowed
-    if (!origin || allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
-      return callback(null, true);
-    }
-    console.warn(`[CORS] Blocked request from origin: ${origin}`);
-    callback(new Error(`Origin ${origin} not allowed by CORS`));
-  },
+  origin: true,
   credentials: true
 };
 
