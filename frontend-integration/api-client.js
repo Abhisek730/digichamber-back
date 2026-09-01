@@ -14,7 +14,7 @@
  *
  * Set API_BASE to wherever you deploy this backend.
  */
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://digichamber-back.onrender.com/api';
 
 let _token = null; // set by DC.auth.login/signup/loginDemo
 
